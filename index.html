@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>For Wissal 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --rose:#d94f6e;
+  --rose-soft:#f5c0cc;
+  --rose-pale:#fff1f4;
+  --plum:#6b4fa0;
+  --gold:#c28b30;
+  --mint:#4aa89a;
+  --cream:#fefcf9;
+  --white:#ffffff;
+  --text:#1a1020;
+  --muted:#9988a8;
+  --border:rgba(217,79,110,.13);
+}
+
+html,body{
+  height:100%;min-height:100vh;
+  background:var(--cream);
+  font-family:'DM Sans',sans-serif;
+  color:var(--text);
+  overflow:hidden;
+}
+
+/* animated canvas */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* floating symbols */
+.sym{
+  position:fixed;pointer-events:none;z-index:1;
+  animation:symRise linear infinite;opacity:0;
+  user-select:none;
+}
+@keyframes symRise{
+  0%{opacity:0;transform:translateY(105vh) scale(.8) rotate(-15deg);}
+  8%{opacity:.55;}
+  92%{opacity:.15;}
+  100%{opacity:0;transform:translateY(-8vh) scale(1.1) rotate(20deg);}
+}
+
+/* progress */
+#bar{
+  position:fixed;top:0;left:0;height:3px;
+  background:linear-gradient(90deg,var(--rose),var(--plum),var(--rose));
+  background-size:200% 100%;
+  animation:barShimmer 3s linear infinite;
+  transition:width .7s cubic-bezier(.4,0,.2,1);
+  z-index:200;
+}
+@keyframes barShimmer{0%{background-position:0% 0;}100%{background-position:200% 0;}}
+
+#counter{
+  position:fixed;top:14px;right:18px;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);z-index:200;
+  transition:opacity .3s;
+}
+
+/* stage */
+#stage{
+  position:relative;z-index:10;
+  width:100%;height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;
+}
+
+/* card */
+.card{
+  width:min(460px,96vw);
+  background:var(--white);
+  border-radius:36px;
+  padding:clamp(36px,7vw,56px) clamp(28px,6vw,48px);
+  box-shadow:
+    0 2px 0 var(--rose-soft),
+    0 8px 40px rgba(217,79,110,.12),
+    0 32px 80px rgba(107,79,160,.08);
+  border:1.5px solid var(--border);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.card::after{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--rose-soft),var(--plum),var(--gold),var(--rose-soft));
+  background-size:300% 100%;
+  animation:barShimmer 4s linear infinite;
+}
+
+/* scenes */
+.scene{display:none;}
+.scene.active{
+  display:block;
+  animation:sceneIn .55s cubic-bezier(.34,1.5,.64,1) both;
+}
+@keyframes sceneIn{
+  from{opacity:0;transform:translateY(22px) scale(.96);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+
+/* typography */
+.tag{
+  display:inline-block;
+  font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--rose);
+  background:var(--rose-pale);
+  border:1px solid var(--rose-soft);
+  border-radius:50px;padding:5px 14px;
+  margin-bottom:20px;
+}
+
+.headline{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(22px,5.8vw,34px);
+  font-style:italic;
+  line-height:1.28;
+  color:var(--text);
+  margin-bottom:14px;
+}
+.headline em{color:var(--rose);font-style:italic;}
+.headline .pl{color:var(--plum);}
+.headline .go{color:var(--gold);}
+
+.body{
+  font-size:14.5px;
+  color:var(--muted);
+  line-height:1.85;
+  margin-bottom:28px;
+}
+.body strong{color:var(--text);font-weight:500;}
+.body .rose{color:var(--rose);font-weight:500;}
+.body .plum{color:var(--plum);font-weight:500;}
+
+/* pickup line box */
+.pickup{
+  background:var(--rose-pale);
+  border:1.5px solid var(--rose-soft);
+  border-radius:18px;
+  padding:18px 20px;
+  margin:4px 0 24px;
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(15px,3.5vw,18px);
+  color:var(--rose);
+  line-height:1.55;
+  position:relative;
+}
+.pickup::before{
+  content:'"';
+  font-size:48px;
+  font-family:'Playfair Display',serif;
+  color:var(--rose-soft);
+  position:absolute;top:-8px;left:14px;
+  line-height:1;
+}
+
+/* icon */
+.icon{
+  font-size:46px;display:block;margin-bottom:18px;
+  animation:float 2.6s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+
+/* feeling chips */
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:6px 0 24px;}
+.chip{
+  background:var(--rose-pale);
+  border:1px solid var(--rose-soft);
+  border-radius:50px;
+  padding:7px 16px;
+  font-size:13px;color:var(--rose);font-weight:500;
+}
+
+/* buttons */
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn{
+  padding:14px 28px;border:none;border-radius:50px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;
+  cursor:pointer;transition:transform .16s,box-shadow .16s,background .2s;
+  position:relative;overflow:hidden;
+}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(217,79,110,.3);}
+.btn:active{transform:scale(.96);}
+.btn-rose{background:var(--rose);color:white;}
+.btn-soft{background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-soft);}
+.btn-plum{background:var(--plum);color:white;}
+.btn-gold{background:#f6efe3;color:var(--gold);border:1.5px solid #e5d4b0;}
+.btn-mint{background:#e5f5f3;color:var(--mint);border:1.5px solid #b0ddd8;}
+
+/* dots */
+.dots{display:flex;justify-content:center;gap:6px;margin-top:28px;flex-wrap:wrap;}
+.dot{width:6px;height:6px;border-radius:50%;background:#f0e8f5;transition:all .4s cubic-bezier(.34,1.56,.64,1);}
+.dot.on{background:var(--rose);width:22px;border-radius:4px;}
+
+/* typing dots */
+.typing{display:inline-flex;gap:6px;align-items:center;margin:8px 0 20px;}
+.typing span{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--rose-soft);
+  animation:typePop .85s ease-in-out infinite;
+}
+.typing span:nth-child(2){animation-delay:.17s;}
+.typing span:nth-child(3){animation-delay:.34s;}
+@keyframes typePop{0%,80%,100%{transform:translateY(0) scale(1);}40%{transform:translateY(-7px) scale(1.2);}}
+
+/* final */
+.f-main{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(50px,13vw,72px);
+  font-style:italic;color:var(--rose);
+  line-height:1;margin-bottom:10px;
+  animation:heartbeat 2.2s ease-in-out infinite;
+}
+@keyframes heartbeat{0%,100%{transform:scale(1);}45%{transform:scale(1.05);}60%{transform:scale(1.02);}}
+.f-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(20px,5vw,28px);
+  color:var(--plum);margin-bottom:22px;
+}
+.f-note{font-size:12.5px;color:#cfc0d8;font-style:italic;margin-top:22px;}
+
+/* confetti */
+.cf{position:fixed;pointer-events:none;z-index:300;border-radius:3px;animation:cfDrop ease-in both;}
+@keyframes cfDrop{0%{opacity:1;transform:translateY(-30px) rotate(0deg);}100%{opacity:0;transform:translateY(110vh) rotate(900deg);}}
+
+/* scroll hint */
+#hint{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  font-size:11px;color:var(--muted);letter-spacing:.1em;
+  animation:blink 2s ease-in-out infinite;z-index:50;white-space:nowrap;
+}
+@keyframes blink{0%,100%{opacity:0;}50%{opacity:.65;}}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div id="bar" style="width:0%"></div>
+<div id="counter">1 / 14</div>
+<div id="hint">tap to begin ✦</div>
+
+<div id="stage">
+<div class="card">
+
+  <!-- 1 — The envelope -->
+  <div class="scene active" id="s1">
+    <span class="icon">💌</span>
+    <p class="tag">just for you</p>
+    <h2 class="headline">Wissal,<br/>you've got <em>mail.</em></h2>
+    <p class="body">Someone who thinks about you <strong>a lot</strong><br/>made this entirely for you.<br/>No one else gets this. Just you, hbiba.</p>
+    <div class="btn-row"><button class="btn btn-rose" onclick="go(2)">Open it →</button></div>
+    <div class="dots" id="d1"></div>
+  </div>
+
+  <!-- 2 — First pickup line -->
+  <div class="scene" id="s2">
+    <span class="icon">🌙</span>
+    <p class="tag">opening line</p>
+    <h2 class="headline">Ok, I'll start with <em>honesty.</em></h2>
+    <div class="pickup">Are you a alarm clock? Because you're the first thing I want to see every morning.</div>
+    <p class="body">Terrible line. I know.<br/>But the feeling behind it? <span class="rose">100% real.</span></p>
+    <div class="btn-row">
+      <button class="btn btn-soft" onclick="go(3)">😂 That's so bad</button>
+      <button class="btn btn-rose" onclick="go(3)">Ok fine it's cute →</button>
+    </div>
+    <div class="dots" id="d2"></div>
+  </div>
+
+  <!-- 3 — How she makes me feel: warmth -->
+  <div class="scene" id="s3">
+    <span class="icon">☀️</span>
+    <p class="tag">how you make me feel</p>
+    <h2 class="headline">You make me feel<br/><em>warm</em> for no reason.</h2>
+    <p class="body">Like when you walk into a room<br/>and everything feels a little brighter.<br/><br/>I don't know how you do it, hbiba.<br/>You just <strong>do.</strong></p>
+    <div class="pickup">Are you the sun? Because even on my darkest days, you somehow find a way in.</div>
+    <div class="btn-row"><button class="btn btn-plum" onclick="go(4)">Keep going →</button></div>
+    <div class="dots" id="d3"></div>
+  </div>
+
+  <!-- 4 — How she makes me feel: calm -->
+  <div class="scene" id="s4">
+    <span class="icon">🌊</span>
+    <p class="tag">the calm you bring</p>
+    <h2 class="headline">You are the <em>quietest</em><br/>kind of magic.</h2>
+    <p class="body">There are days when everything feels loud<br/>and chaotic and too much —<br/><br/>and then there's you.<br/>Somehow just <strong>being near you</strong><br/>makes the whole world slow down.</p>
+    <div class="btn-row"><button class="btn btn-rose" onclick="go(5)">That's beautiful →</button></div>
+    <div class="dots" id="d4"></div>
+  </div>
+
+  <!-- 5 — Pickup line 2 -->
+  <div class="scene" id="s5">
+    <span class="icon">📡</span>
+    <p class="tag">another terrible line</p>
+    <h2 class="headline">Ok, here's <em>another one.</em></h2>
+    <div class="pickup">Do you have a map? I keep getting lost in whatever this feeling is whenever you're around.</div>
+    <p class="body">I genuinely can't explain it, Wissal.<br/>You just <span class="rose">scramble everything</span> in the best way.<br/>My thoughts. My words. My whole composure.</p>
+    <div class="btn-row">
+      <button class="btn btn-soft" onclick="go(6)">😭 Stop</button>
+      <button class="btn btn-rose" onclick="go(6)">Don't stop →</button>
+    </div>
+    <div class="dots" id="d5"></div>
+  </div>
+
+  <!-- 6 — How she makes me feel: seen -->
+  <div class="scene" id="s6">
+    <span class="icon">🪟</span>
+    <p class="tag">the way you see me</p>
+    <h2 class="headline">You make me feel<br/><em>seen,</em> hbiba.</h2>
+    <p class="body">Not just looked at — actually <strong>seen.</strong><br/><br/>Like you notice the small things.<br/>Like you actually listen.<br/>Like when you look at me,<br/>you're looking at <span class="rose">all of it</span> — and staying anyway.</p>
+    <div class="btn-row"><button class="btn btn-plum" onclick="go(7)">I feel that →</button></div>
+    <div class="dots" id="d6"></div>
+  </div>
+
+  <!-- 7 — The feelings list -->
+  <div class="scene" id="s7">
+    <span class="icon">📋</span>
+    <p class="tag">a full inventory</p>
+    <h2 class="headline">Things I feel<br/>because of <em>you:</em></h2>
+    <div class="chips">
+      <span class="chip">🌸 Warm out of nowhere</span>
+      <span class="chip">😤 Flustered</span>
+      <span class="chip">🏠 Safe</span>
+      <span class="chip">😂 Embarrassingly happy</span>
+      <span class="chip">🌟 Like I want to be better</span>
+      <span class="chip">🥹 Soft</span>
+      <span class="chip">💫 Like time moves differently</span>
+    </div>
+    <div class="btn-row"><button class="btn btn-rose" onclick="go(8)">All because of me? →</button></div>
+    <div class="dots" id="d7"></div>
+  </div>
+
+  <!-- 8 — Yes, all because of you -->
+  <div class="scene" id="s8">
+    <span class="icon">🫀</span>
+    <p class="tag">yes. all of it.</p>
+    <h2 class="headline">All because of <em>you,</em><br/>Wissal. Every single one.</h2>
+    <p class="body">Not exaggerating.<br/>Not being dramatic.<br/><br/>You have this effect on me<br/>that I never expected<br/>and <strong>never want to lose.</strong></p>
+    <div class="pickup">I must be a snowflake — because I've completely fallen for you and I can't stop.</div>
+    <div class="btn-row"><button class="btn btn-plum" onclick="go(9)">Ok I'm blushing →</button></div>
+    <div class="dots" id="d8"></div>
+  </div>
+
+  <!-- 9 — How she makes me feel: brave -->
+  <div class="scene" id="s9">
+    <span class="icon">🦁</span>
+    <p class="tag">something I want you to know</p>
+    <h2 class="headline">You make me feel<br/><em>braver</em> than I am.</h2>
+    <p class="body">Around you, I want to say all the things<br/>I'd normally keep to myself.<br/><br/>Like right now.<br/>Like this entire thing.<br/><br/>You make it feel <span class="rose">ok to be this honest.</span></p>
+    <div class="btn-row"><button class="btn btn-rose" onclick="go(10)">Keep being honest →</button></div>
+    <div class="dots" id="d9"></div>
+  </div>
+
+  <!-- 10 — The big pickup line -->
+  <div class="scene" id="s10">
+    <span class="icon">🌹</span>
+    <p class="tag">the big one</p>
+    <h2 class="headline">Ok hbiba,<br/>this one is <em>for real.</em></h2>
+    <div class="pickup">If feelings were a language, you'd be every word I didn't know I needed until I found you.</div>
+    <p class="body">I mean that.<br/>Before you, a lot of things felt incomplete.<br/>And then you happened<br/>and things just started making <strong>more sense.</strong></p>
+    <div class="btn-row">
+      <button class="btn btn-soft" onclick="go(11)">🥹 I can't</button>
+      <button class="btn btn-rose" onclick="go(11)">What's next →</button>
+    </div>
+    <div class="dots" id="d10"></div>
+  </div>
+
+  <!-- 11 — How special she is -->
+  <div class="scene" id="s11">
+    <span class="icon">💎</span>
+    <p class="tag">what you need to hear</p>
+    <h2 class="headline">Wissal, you are<br/>genuinely <em>one of a kind.</em></h2>
+    <p class="body">The way you laugh.<br/>The way you care.<br/>The way you light up when you talk about something you love.<br/><br/>There is no one like you.<br/><span class="rose">Truly. No one.</span><br/><br/>And I get to know you.<br/>That means everything to me.</p>
+    <div class="btn-row"><button class="btn btn-plum" onclick="go(12)">One more →</button></div>
+    <div class="dots" id="d11"></div>
+  </div>
+
+  <!-- 12 — The build up -->
+  <div class="scene" id="s12">
+    <span class="icon">🥁</span>
+    <p class="tag">almost there</p>
+    <h2 class="headline">14 chapters for<br/><em>three words.</em></h2>
+    <p class="body">Pickup lines. Feelings. Honesty.<br/>All of it leading here.<br/><br/>You already feel what it is, hbiba.<br/>But you deserve to hear it said <strong>properly.</strong></p>
+    <div class="typing"><span></span><span></span><span></span></div>
+    <div class="btn-row"><button class="btn btn-rose" onclick="go(13)">Say it 💕</button></div>
+    <div class="dots" id="d12"></div>
+  </div>
+
+  <!-- 13 — I love you -->
+  <div class="scene" id="s13">
+    <div class="f-main">I love you,</div>
+    <div class="f-name">Wissal — hbiba.</div>
+    <p class="body" style="margin-top:4px;">
+      Every warm feeling.<br/>
+      Every scrambled thought.<br/>
+      Every cheesy line.<br/>
+      <strong>All of it is real. All of it is you.</strong>
+    </p>
+    <div class="btn-row">
+      <button class="btn btn-rose" onclick="go(14)">There's one more thing →</button>
+    </div>
+    <div class="dots" id="d13"></div>
+  </div>
+
+  <!-- 14 — Final message -->
+  <div class="scene" id="s14">
+    <span class="icon">🌸</span>
+    <p class="tag">the last page</p>
+    <h2 class="headline">Thank you for<br/><em>being you,</em> hbiba.</h2>
+    <p class="body">
+      For every moment that made me feel alive.<br/>
+      For making ordinary days feel like gifts.<br/>
+      For being the kind of person who makes<br/>
+      everyone around them better just by existing.<br/><br/>
+      <span class="rose">You are so, so loved, Wissal.</span><br/>
+      Never forget that.
+    </p>
+    <div class="btn-row">
+      <button class="btn btn-rose" onclick="restart()">💕 Read it again</button>
+    </div>
+    <p class="f-note">made with all of it. just for you.</p>
+    <div class="dots" id="d14"></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+var T=14, cur=1;
+
+// build dots
+for(var i=1;i<=T;i++){
+  var el=document.getElementById('d'+i);
+  if(!el)continue;
+  for(var j=1;j<=T;j++){
+    var d=document.createElement('div');
+    d.className='dot'+(j===i?' on':'');
+    el.appendChild(d);
+  }
+}
+
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  cur=n;
+  document.getElementById('s'+cur).classList.add('active');
+  document.getElementById('bar').style.width=((cur/T)*100)+'%';
+  document.getElementById('counter').textContent=cur+' / '+T;
+  if(cur===13)setTimeout(confetti,400);
+}
+
+function restart(){
+  document.getElementById('s'+cur).classList.remove('active');
+  cur=1;
+  document.getElementById('s1').classList.add('active');
+  document.getElementById('bar').style.width=(1/T*100)+'%';
+  document.getElementById('counter').textContent='1 / '+T;
+}
+
+// canvas blobs
+var cv=document.getElementById('bg'),ctx=cv.getContext('2d'),W,H,blobs=[];
+function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+var pal=[
+  'rgba(245,192,204,.2)','rgba(180,152,220,.16)',
+  'rgba(250,210,160,.16)','rgba(160,220,210,.14)'
+];
+for(var k=0;k<7;k++)blobs.push({
+  x:Math.random()*1400,y:Math.random()*900,
+  r:120+Math.random()*220,
+  dx:(Math.random()-.5)*.45,dy:(Math.random()-.5)*.45,
+  c:pal[k%pal.length]
+});
+function drawBg(){
+  ctx.clearRect(0,0,W,H);
+  blobs.forEach(function(b){
+    ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+    ctx.fillStyle=b.c;ctx.fill();
+    b.x+=b.dx;b.y+=b.dy;
+    if(b.x<-b.r||b.x>W+b.r)b.dx*=-1;
+    if(b.y<-b.r||b.y>H+b.r)b.dy*=-1;
+  });
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+// floating symbols
+var syms=['♥','♡','✦','✿','˖','·','❋','❀'];
+for(var p=0;p<20;p++){
+  (function(p){
+    var e=document.createElement('div');
+    e.className='sym';
+    e.textContent=syms[p%syms.length];
+    e.style.left=(2+Math.random()*96)+'%';
+    e.style.fontSize=(9+Math.random()*15)+'px';
+    e.style.color=['#f5c0cc','#c4b0e8','#f0c87a','#a8d8d0','#d94f6e'][p%5];
+    e.style.animationDuration=(6+Math.random()*9)+'s';
+    e.style.animationDelay=(Math.random()*9)+'s';
+    document.body.appendChild(e);
+  })(p);
+}
+
+// confetti
+function confetti(){
+  var cols=['#d94f6e','#f5c0cc','#6b4fa0','#c4b0e8','#c28b30','#f6efe3','#4aa89a','#fde8ec'];
+  for(var i=0;i<90;i++){
+    (function(i){
+      setTimeout(function(){
+        var c=document.createElement('div');
+        c.className='cf';
+        c.style.cssText=[
+          'left:'+(4+Math.random()*92)+'vw',
+          'top:18vh',
+          'width:'+(5+Math.random()*9)+'px',
+          'height:'+(5+Math.random()*9)+'px',
+          'background:'+cols[Math.floor(Math.random()*cols.length)],
+          'border-radius:'+(Math.random()>.5?'50%':'3px'),
+          'animation-duration:'+(2+Math.random()*2.5)+'s',
+          'animation-delay:0s'
+        ].join(';');
+        document.body.appendChild(c);
+        setTimeout(function(){c.remove();},5000);
+      },i*30);
+    })(i);
+  }
+}
+
+document.addEventListener('click',function(){
+  document.getElementById('hint').style.display='none';
+},{once:true});
+</script>
+</body>
+</html>
